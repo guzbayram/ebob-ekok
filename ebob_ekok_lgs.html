@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>EBOB & EKOK — LGS Hazırlık</title>
+<style>
+:root {
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --bg-p:#ffffff; --bg-s:#f5f5f3; --bg-t:#efefed;
+  --tx-p:#1a1a18; --tx-s:#6b6b66;
+  --bd-t:rgba(0,0,0,.12); --bd-s:rgba(0,0,0,.22); --bd-p:rgba(0,0,0,.38);
+  --bg-info:#E6F1FB; --tx-info:#0C447C; --bd-info:#B5D4F4;
+  --bg-ok:#EAF3DE;   --tx-ok:#27500A;   --bd-ok:#9FE1CB;
+  --bg-warn:#FAEEDA; --tx-warn:#633806;
+  --bg-err:#FCEBEB;  --tx-err:#501313;  --bd-err:#F7C1C1;
+  --bg-pur:#EEEDFE;  --tx-pur:#3C3489;  --bd-pur:#AFA9EC;
+  --rad-m:8px; --rad-l:12px;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg-p:#1e1e1c; --bg-s:#2a2a28; --bg-t:#323230;
+  --tx-p:#e8e6de; --tx-s:#9c9a92;
+  --bd-t:rgba(255,255,255,.10); --bd-s:rgba(255,255,255,.20); --bd-p:rgba(255,255,255,.38);
+  --bg-info:#0c2d4a; --tx-info:#85B7EB; --bd-info:#185FA5;
+  --bg-ok:#122808;   --tx-ok:#97C459;   --bd-ok:#3B6D11;
+  --bg-warn:#2d1f05; --tx-warn:#EF9F27;
+  --bg-err:#2d0f0f;  --tx-err:#F09595;  --bd-err:#A32D2D;
+  --bg-pur:#1a1940;  --tx-pur:#AFA9EC;  --bd-pur:#534AB7;
+}}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{font-family:var(--sans);background:var(--bg-s);color:var(--tx-p);min-height:100vh;}
+
+/* TOP BAR */
+.topbar{background:var(--bg-p);border-bottom:.5px solid var(--bd-t);padding:14px 16px 0;position:sticky;top:0;z-index:300;box-shadow:0 1px 6px rgba(0,0,0,.06);}
+.topbar-title{font-size:16px;font-weight:500;margin-bottom:10px;}
+.tabs{display:flex;gap:5px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:1px;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{flex-shrink:0;padding:8px 15px;border-radius:var(--rad-m) var(--rad-m) 0 0;border:.5px solid transparent;background:transparent;font-size:13px;cursor:pointer;color:var(--tx-s);font-weight:400;white-space:nowrap;font-family:var(--sans);transition:all .15s;}
+.tab.active{background:var(--bg-p);border-color:var(--bd-t);border-bottom-color:var(--bg-p);color:var(--tx-p);font-weight:500;}
+
+/* LAYOUT */
+.content{padding:16px;max-width:860px;margin:0 auto;}
+.section{display:none;}.section.active{display:block;}
+
+/* TYPE */
+h2{font-size:17px;font-weight:500;margin-bottom:.75rem;}
+h3{font-size:15px;font-weight:500;margin-bottom:.4rem;}
+p,li{font-size:14px;line-height:1.7;}
+ul{padding-left:1.1rem;}li{margin-bottom:.3rem;}
+
+/* CARD / BADGE / BOXES */
+.card{background:var(--bg-p);border:.5px solid var(--bd-t);border-radius:var(--rad-l);padding:1rem 1.1rem;margin-bottom:.9rem;}
+.badge{display:inline-block;font-size:11px;padding:3px 9px;border-radius:var(--rad-m);font-weight:500;margin-bottom:.5rem;}
+.b-blue{background:var(--bg-info);color:var(--tx-info);}
+.b-green{background:var(--bg-ok);color:var(--tx-ok);}
+.b-warn{background:var(--bg-warn);color:var(--tx-warn);}
+.b-err{background:var(--bg-err);color:var(--tx-err);}
+.b-pur{background:var(--bg-pur);color:var(--tx-pur);}
+.def-box{border-left:3px solid;padding:.7rem 1rem;border-radius:0 var(--rad-m) var(--rad-m) 0;margin-bottom:.9rem;}
+.def-e{border-color:#185FA5;background:var(--bg-info);}
+.def-e h3,.def-e p{color:var(--tx-info);}
+.def-k{border-color:#0F6E56;background:var(--bg-ok);}
+.def-k h3,.def-k p{color:var(--tx-ok);}
+.formula-box{background:var(--bg-pur);border:.5px solid var(--bd-pur);border-radius:var(--rad-m);padding:.7rem 1.1rem;margin:.7rem 0;text-align:center;}
+.formula{font-size:17px;font-weight:500;color:var(--tx-pur);}
+.tip-box{border-left:3px solid #BA7517;background:var(--bg-warn);border-radius:0 var(--rad-m) var(--rad-m) 0;padding:.7rem 1rem;margin-bottom:.75rem;}
+.tip-box p{color:var(--tx-warn);font-size:13px;}
+.step-box{background:var(--bg-s);border-radius:var(--rad-m);padding:.55rem .9rem;margin:.35rem 0;font-size:13px;}
+.sn{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--tx-s);color:var(--bg-p);font-size:11px;font-weight:500;margin-right:7px;flex-shrink:0;}
+
+/* BUTTONS */
+input[type=number]{width:80px;padding:7px 10px;font-size:14px;border:.5px solid var(--bd-s);border-radius:var(--rad-m);background:var(--bg-p);color:var(--tx-p);font-family:var(--sans);}
+.btn{padding:8px 18px;border-radius:var(--rad-m);border:.5px solid var(--bd-s);background:var(--bg-s);color:var(--tx-p);font-size:13px;cursor:pointer;font-family:var(--sans);transition:all .15s;}
+.btn:active{opacity:.7;}
+.btn-sm{padding:4px 10px;border-radius:var(--rad-m);border:.5px solid var(--bd-s);background:transparent;color:var(--tx-s);font-size:11px;cursor:pointer;font-family:var(--sans);}
+.btn-sm.active{background:var(--bg-s);color:var(--tx-p);border-color:var(--bd-p);}
+
+/* HESAP */
+.venn-row{display:flex;border-radius:var(--rad-l);overflow:hidden;border:.5px solid var(--bd-t);margin:.75rem 0;}
+.v-a,.v-m,.v-b{padding:.6rem .5rem;text-align:center;}
+.v-a{background:var(--bg-info);flex:1;} .v-b{background:var(--bg-ok);flex:1;}
+.v-m{background:var(--bg-pur);flex:0 0 96px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.v-lbl{font-size:10px;font-weight:500;color:var(--tx-s);margin-bottom:3px;text-transform:uppercase;letter-spacing:.04em;}
+.v-num{font-size:13px;font-weight:500;}
+.v-a .v-num{color:var(--tx-info);} .v-b .v-num{color:var(--tx-ok);} .v-m .v-num{color:var(--tx-pur);}
+.res-row{display:flex;gap:10px;margin-top:.7rem;}
+.res-card{flex:1;padding:.65rem .75rem;border-radius:var(--rad-m);text-align:center;}
+.res-e{background:var(--bg-info);border:1px solid var(--bd-info);}
+.res-k{background:var(--bg-ok);border:1px solid var(--bd-ok);}
+.res-lbl{font-size:11px;color:var(--tx-s);margin-bottom:3px;}
+.res-val{font-size:22px;font-weight:500;}
+.res-e .res-val{color:var(--tx-info);} .res-k .res-val{color:var(--tx-ok);}
+
+/* PRATIK QUIZ */
+.qscore{display:flex;align-items:center;gap:10px;margin-bottom:.9rem;background:var(--bg-p);border:.5px solid var(--bd-t);border-radius:var(--rad-l);padding:.75rem 1rem;}
+.quiz-opt{width:100%;text-align:left;padding:11px 14px;border-radius:var(--rad-m);border:.5px solid var(--bd-s);background:var(--bg-s);color:var(--tx-p);font-size:14px;cursor:pointer;margin-bottom:7px;font-family:var(--sans);transition:all .15s;}
+.quiz-opt.correct{background:var(--bg-ok);border-color:var(--bd-ok);color:var(--tx-ok);}
+.quiz-opt.wrong{background:var(--bg-err);border-color:var(--bd-err);color:var(--tx-err);}
+.pexp{background:var(--bg-s);border-radius:var(--rad-m);padding:.65rem .9rem;font-size:13px;color:var(--tx-s);margin-top:.4rem;display:none;line-height:1.6;}
+.pexp.show{display:block;}
+
+/* GENEL: STAT BAR */
+.gs-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--bg-p);border:.5px solid var(--bd-t);border-radius:var(--rad-l);padding:12px 14px;margin-bottom:12px;}
+.gs-stat{text-align:center;min-width:58px;}
+.gs-sv{font-size:20px;font-weight:500;line-height:1.1;}
+.gs-sl{font-size:10px;color:var(--tx-s);text-transform:uppercase;letter-spacing:.04em;}
+.s-ok .gs-sv{color:#27500A;} .s-wr .gs-sv{color:#A32D2D;} .s-bl .gs-sv{color:#BA7517;}
+.prog-wrap{margin-bottom:14px;}
+.prog-bg{background:var(--bd-t);border-radius:99px;height:6px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,#185FA5,#0F6E56);border-radius:99px;transition:width .35s;}
+.prog-lbl{font-size:11px;color:var(--tx-s);margin-top:4px;}
+
+/* SORU KARTI */
+.gs-card{background:var(--bg-p);border:.5px solid var(--bd-t);border-radius:var(--rad-l);margin-bottom:16px;overflow:hidden;transition:border-color .2s;}
+.gs-card.c-ok{border-color:#3B6D11;}
+.gs-card.c-wr{border-color:#A32D2D;}
+.gs-body{padding:14px 14px 10px;}
+.gs-qrow{display:flex;align-items:flex-start;gap:9px;margin-bottom:10px;}
+.gs-num{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;min-width:26px;border-radius:50%;background:var(--bg-s);font-size:12px;font-weight:500;color:var(--tx-s);}
+.gs-txt{font-size:14px;font-weight:500;line-height:1.6;}
+
+/* ŞIKLAR */
+.gs-opts{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:0 14px 12px;}
+@media(max-width:460px){.gs-opts{grid-template-columns:1fr;}}
+.gs-opt{display:flex;align-items:center;gap:8px;padding:9px 11px;border:.5px solid var(--bd-s);border-radius:var(--rad-m);background:var(--bg-s);font-size:13px;cursor:pointer;font-family:var(--sans);color:var(--tx-p);text-align:left;transition:all .15s;}
+.gs-opt:active:not(:disabled){opacity:.7;}
+.opt-l{width:22px;height:22px;min-width:22px;border-radius:50%;background:var(--bg-p);border:.5px solid var(--bd-s);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;transition:all .15s;}
+.gs-opt.sel-ok{background:var(--bg-ok);border-color:var(--bd-ok);color:var(--tx-ok);}
+.gs-opt.sel-ok .opt-l{background:#3B6D11;border-color:#3B6D11;color:#fff;}
+.gs-opt.sel-wr{background:var(--bg-err);border-color:var(--bd-err);color:var(--tx-err);}
+.gs-opt.sel-wr .opt-l{background:#A32D2D;border-color:#A32D2D;color:#fff;}
+.gs-opt.rev-ok{background:var(--bg-ok);border-color:var(--bd-ok);color:var(--tx-ok);opacity:.75;}
+.gs-opt.rev-ok .opt-l{background:#3B6D11;border-color:#3B6D11;color:#fff;}
+.gs-opt:disabled{cursor:default;}
+
+/* ÇİZİM ALANI */
+.draw-wrap{border-top:.5px solid var(--bd-t);padding:10px 14px 14px;}
+.draw-tb{display:flex;align-items:center;gap:7px;margin-bottom:8px;flex-wrap:wrap;}
+.draw-lbl{font-size:11px;color:var(--tx-s);}
+.clr-btn{width:22px;height:22px;min-width:22px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:transform .1s,border-color .1s;flex-shrink:0;}
+.clr-btn.active{border-color:var(--tx-p);transform:scale(1.25);}
+.erase-btn{padding:3px 10px;border-radius:var(--rad-m);border:.5px solid var(--bd-s);background:transparent;font-size:11px;cursor:pointer;color:var(--tx-s);font-family:var(--sans);margin-left:auto;}
+canvas.cvs{width:100%;height:150px;display:block;border-radius:var(--rad-m);background:#fafaf8;border:.5px dashed var(--bd-s);cursor:crosshair;touch-action:none;}
+@media(prefers-color-scheme:dark){canvas.cvs{background:#252523;}}
+
+/* AÇIKLAMA */
+.gs-exp{border-top:.5px solid var(--bd-t);padding:10px 14px;font-size:13px;color:var(--tx-s);line-height:1.65;display:none;}
+.gs-exp.show{display:block;}
+
+/* KATEGORİ BAŞLIĞI */
+.cat-head{display:flex;align-items:center;gap:8px;margin:20px 0 6px;}
+.cat-head::before,.cat-head::after{content:'';flex:1;height:.5px;background:var(--bd-t);}
+.cat-head span{font-size:11px;font-weight:500;color:var(--tx-s);white-space:nowrap;}
+.cat-tip{border-left:3px solid #BA7517;background:var(--bg-warn);border-radius:0 var(--rad-m) var(--rad-m) 0;padding:.5rem .9rem;margin-bottom:7px;font-size:12px;color:var(--tx-warn);}
+
+/* İSTATİSTİK */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}
+@media(max-width:460px){.stat-grid{grid-template-columns:repeat(2,1fr);}}
+.stat-box{background:var(--bg-p);border:.5px solid var(--bd-t);border-radius:var(--rad-l);padding:12px;text-align:center;}
+.stat-v{font-size:26px;font-weight:500;}
+.stat-l{font-size:10px;color:var(--tx-s);text-transform:uppercase;letter-spacing:.04em;margin-top:2px;}
+.stat-ok .stat-v{color:#27500A;} .stat-wr .stat-v{color:#A32D2D;} .stat-pct .stat-v{color:#185FA5;}
+.bar-wrap{margin-bottom:9px;}
+.bar-top{display:flex;justify-content:space-between;font-size:12px;color:var(--tx-s);margin-bottom:3px;}
+.bar-bg{background:var(--bd-t);border-radius:99px;height:8px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:99px;transition:width .4s;}
+.wrong-item{display:flex;align-items:flex-start;gap:6px;padding:.4rem 0;border-bottom:.5px solid var(--bd-t);font-size:12px;line-height:1.5;color:var(--tx-s);}
+.wrong-item:last-child{border-bottom:none;}
+.wnum{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;min-width:20px;border-radius:50%;background:var(--bg-err);color:var(--tx-err);font-size:10px;font-weight:500;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-title">📐 EBOB &amp; EKOK — LGS Hazırlık</div>
+  <div class="tabs">
+    <button class="tab active"  onclick="showTab('tanim',this)">Tanımlar</button>
+    <button class="tab" onclick="showTab('hesap',this)">Hesaplama Aracı</button>
+    <button class="tab" onclick="showTab('strateji',this)">LGS Stratejileri</button>
+    <button class="tab" onclick="showTab('pratik',this)">Pratik Sorular</button>
+    <button class="tab" onclick="showTab('genel',this)">Genel Sorular</button>
+    <button class="tab" onclick="showTab('stat',this)">İstatistik</button>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- ════ TANIMLAR ════ -->
+<div id="tanim" class="section active">
+  <div class="def-box def-e">
+    <h3>EBOB — En Büyük Ortak Bölen</h3>
+    <p>İki ya da daha fazla sayıyı tam bölen sayılar arasındaki <strong>en büyük ortak</strong> olandır.</p>
+    <p style="margin-top:.35rem;font-size:13px">Örnek: 12 ve 18'in ortak bölenleri → 1, 2, 3, 6 → <strong>EBOB = 6</strong></p>
+  </div>
+  <div class="def-box def-k">
+    <h3>EKOK — En Küçük Ortak Kat</h3>
+    <p>İki ya da daha fazla sayının her ikisine de tam bölünen katları arasındaki <strong>en küçük ortak</strong> olandır.</p>
+    <p style="margin-top:.35rem;font-size:13px">Örnek: 4 ve 6'nın ortak katları → 12, 24, 36… → <strong>EKOK = 12</strong></p>
+  </div>
+  <div class="card">
+    <span class="badge b-blue">Asal Çarpanlara Ayırma Yöntemi</span>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin:.5rem 0">
+      <div style="flex:1;min-width:150px;background:var(--bg-info);border-radius:var(--rad-m);padding:.65rem .9rem">
+        <p style="font-size:12px;font-weight:500;color:var(--tx-info);margin-bottom:.2rem">EBOB için:</p>
+        <p style="font-size:12px;color:var(--tx-info)">Ortak asal çarpanları <strong>küçük</strong> kuvvetleriyle çarp</p>
+      </div>
+      <div style="flex:1;min-width:150px;background:var(--bg-ok);border-radius:var(--rad-m);padding:.65rem .9rem">
+        <p style="font-size:12px;font-weight:500;color:var(--tx-ok);margin-bottom:.2rem">EKOK için:</p>
+        <p style="font-size:12px;color:var(--tx-ok)"><strong>Tüm</strong> asal çarpanları <strong>büyük</strong> kuvvetleriyle çarp</p>
+      </div>
+    </div>
+    <div style="background:var(--bg-s);border-radius:var(--rad-m);padding:.65rem .9rem">
+      <p style="font-size:12px;color:var(--tx-s);margin-bottom:.2rem"><strong>Örnek — 12 ve 18:</strong></p>
+      <p style="font-size:12px">12 = 2² × 3¹ &nbsp;&nbsp; 18 = 2¹ × 3²</p>
+      <p style="font-size:12px;color:var(--tx-info)">EBOB = 2¹ × 3¹ = <strong>6</strong></p>
+      <p style="font-size:12px;color:var(--tx-ok)">EKOK = 2² × 3² = <strong>36</strong></p>
+    </div>
+  </div>
+  <div class="formula-box">
+    <p style="font-size:12px;color:var(--tx-pur);margin-bottom:.3rem">Altın Kural — LGS'de Çok Çıkar!</p>
+    <div class="formula">EBOB(a,b) × EKOK(a,b) = a × b</div>
+    <p style="font-size:11px;color:var(--tx-pur);margin-top:.3rem">(Yalnızca iki sayı için geçerlidir)</p>
+  </div>
+</div>
+
+<!-- ════ HESAPLAMA ════ -->
+<div id="hesap" class="section">
+  <div class="card">
+    <h3 style="margin-bottom:.75rem">İnteraktif Hesaplayıcı</h3>
+    <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-bottom:.9rem">
+      <div><p style="font-size:12px;color:var(--tx-s);margin-bottom:4px">1. Sayı</p><input type="number" id="n1" value="12" min="1" max="9999"></div>
+      <div><p style="font-size:12px;color:var(--tx-s);margin-bottom:4px">2. Sayı</p><input type="number" id="n2" value="18" min="1" max="9999"></div>
+      <button class="btn" onclick="calc()">Hesapla →</button>
+    </div>
+    <div id="hres" style="display:none">
+      <p style="font-size:12px;font-weight:500;color:var(--tx-s);margin-bottom:.3rem">Venn Diyagramı</p>
+      <div class="venn-row" id="venn"></div>
+      <div id="steps"></div>
+      <div class="res-row">
+        <div class="res-card res-e"><div class="res-lbl">EBOB</div><div class="res-val" id="re">–</div></div>
+        <div class="res-card res-k"><div class="res-lbl">EKOK</div><div class="res-val" id="rk">–</div></div>
+      </div>
+      <div style="margin-top:.65rem;background:var(--bg-pur);border-radius:var(--rad-m);padding:.65rem 1rem;text-align:center">
+        <p style="font-size:12px;color:var(--tx-pur)" id="ktext"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ STRATEJİLER ════ -->
+<div id="strateji" class="section">
+  <div class="tip-box"><p>⭐ Bu stratejileri ezberlemek LGS'deki EBOB/EKOK sorularının tamamını çözmenizi sağlar.</p></div>
+  <div class="card">
+    <span class="badge b-blue">Strateji 1 — Asal Çarpanlara Ayırma</span>
+    <div class="step-box"><span class="sn">1</span>Her sayıyı asal çarpanlarına ayır (2,3,5,7…)</div>
+    <div class="step-box"><span class="sn">2</span>EBOB: ortak olanları <em>küçük</em> kuvvetle çarp</div>
+    <div class="step-box"><span class="sn">3</span>EKOK: tümünü <em>büyük</em> kuvvetle çarp</div>
+  </div>
+  <div class="card">
+    <span class="badge b-green">Strateji 2 — Öklid Algoritması (hızlı EBOB)</span>
+    <div class="step-box"><span class="sn">1</span>Büyük sayıyı küçüğe böl, kalanı bul</div>
+    <div class="step-box"><span class="sn">2</span>Küçük sayıyı kalana böl, yeni kalanı bul</div>
+    <div class="step-box"><span class="sn">3</span>Kalan sıfır olunca son bölen = EBOB</div>
+    <div style="background:var(--bg-s);border-radius:var(--rad-m);padding:.65rem;margin-top:.4rem;font-size:12px">
+      <p><strong>Örnek — EBOB(48,36):</strong></p>
+      <p>48 ÷ 36 = 1 kalan <strong>12</strong></p>
+      <p>36 ÷ 12 = 3 kalan <strong>0</strong> → EBOB = <strong>12</strong></p>
+    </div>
+  </div>
+  <div class="card">
+    <span class="badge b-warn">Strateji 3 — Altın Kural ile Bilinmeyeni Bul</span>
+    <div class="formula-box" style="margin:.4rem 0"><div class="formula" style="font-size:15px">EBOB × EKOK = a × b</div></div>
+    <div style="background:var(--bg-s);border-radius:var(--rad-m);padding:.65rem;font-size:12px">
+      <p><strong>Örnek:</strong> EBOB=6, EKOK=60, a=12 ise b=?</p>
+      <p style="color:var(--tx-ok);margin-top:.3rem">6 × 60 = 12 × b → b = <strong>30</strong></p>
+    </div>
+  </div>
+  <div class="card">
+    <span class="badge b-err">Strateji 4 — Gerçek Hayat Soruları</span>
+    <ul style="font-size:13px">
+      <li style="margin-bottom:.4rem"><strong>EBOB:</strong> "En büyük eşit parça", "en fazla grup" → EBOB</li>
+      <li style="margin-bottom:.4rem"><strong>EKOK:</strong> "En erken buluşma", "ilk ortak zil" → EKOK</li>
+      <li><strong>Tren/Otobüs:</strong> Her X ve Y dakikada bir kalkış → EKOK</li>
+    </ul>
+  </div>
+  <div class="card">
+    <span class="badge b-pur">Strateji 5 — LGS Tuzakları</span>
+    <ul style="font-size:13px">
+      <li style="margin-bottom:.4rem">EBOB ≤ EKOK her zaman</li>
+      <li style="margin-bottom:.4rem">Biri diğerinin katıysa → EBOB = küçük, EKOK = büyük</li>
+      <li style="margin-bottom:.4rem">Aralarında asalsa → EBOB=1, EKOK=çarpımları</li>
+      <li>Üç sayıda <strong>altın kural geçmez</strong> — dikkat!</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ════ PRATİK SORULAR ════ -->
+<div id="pratik" class="section">
+  <div class="qscore">
+    <span style="font-size:13px;color:var(--tx-s)">Puan:</span>
+    <span style="font-size:14px;font-weight:500" id="pscore">0 / 0</span>
+    <button class="btn" onclick="resetP()" style="margin-left:auto">Yeniden Başla</button>
+  </div>
+  <div id="pquiz"></div>
+</div>
+
+<!-- ════ GENEL SORULAR ════ -->
+<div id="genel" class="section">
+  <div class="gs-bar">
+    <div class="gs-stat s-ok"><div class="gs-sv" id="g-ok">0</div><div class="gs-sl">Doğru</div></div>
+    <div class="gs-stat s-wr"><div class="gs-sv" id="g-wr">0</div><div class="gs-sl">Yanlış</div></div>
+    <div class="gs-stat s-bl"><div class="gs-sv" id="g-bl">50</div><div class="gs-sl">Kalan</div></div>
+    <div class="gs-stat"><div class="gs-sv" id="g-pct">—</div><div class="gs-sl">Başarı</div></div>
+    <div style="margin-left:auto;display:flex;gap:6px;flex-wrap:wrap">
+      <button class="btn" style="font-size:12px" onclick="showTab('stat',document.querySelectorAll('.tab')[5])">İstatistik ↗</button>
+      <button class="btn" style="font-size:12px" onclick="resetG()">Sıfırla</button>
+    </div>
+  </div>
+  <div class="prog-wrap">
+    <div class="prog-bg"><div class="prog-fill" id="g-prog" style="width:0%"></div></div>
+    <div class="prog-lbl" id="g-lbl">0 / 50 soru cevaplanıyor</div>
+  </div>
+  <div id="gcont"></div>
+</div>
+
+<!-- ════ İSTATİSTİK ════ -->
+<div id="stat" class="section">
+  <h2 style="margin-bottom:1rem">Performans İstatistikleri</h2>
+  <div class="stat-grid">
+    <div class="stat-box stat-ok"><div class="stat-v" id="st-ok">0</div><div class="stat-l">Doğru</div></div>
+    <div class="stat-box stat-wr"><div class="stat-v" id="st-wr">0</div><div class="stat-l">Yanlış</div></div>
+    <div class="stat-box"><div class="stat-v" id="st-bl">50</div><div class="stat-l">Boş</div></div>
+    <div class="stat-box stat-pct"><div class="stat-v" id="st-pct">—</div><div class="stat-l">Başarı</div></div>
+  </div>
+  <div class="card">
+    <h3 style="margin-bottom:.75rem">Kategoriye Göre Başarı</h3>
+    <div id="cat-bars"></div>
+  </div>
+  <div class="card">
+    <h3 style="margin-bottom:.75rem">Yanlış &amp; Boş Sorular</h3>
+    <div id="wrong-list"><p style="font-size:13px;color:var(--tx-s)">Henüz cevaplanmadı.</p></div>
+  </div>
+  <div style="text-align:center;margin-top:.5rem">
+    <button class="btn" onclick="showTab('genel',document.querySelectorAll('.tab')[4])">← Sorulara Dön</button>
+  </div>
+</div>
+
+</div><!-- /content -->
+<script>
+/* ── HELPERS ── */
+function gcd(a,b){return b===0?a:gcd(b,a%b);}
+function lcm(a,b){return(a*b)/gcd(a,b);}
+function pf(n){var f={};for(var d=2;d*d<=n;d++){while(n%d===0){f[d]=(f[d]||0)+1;n=Math.floor(n/d);}}if(n>1)f[n]=(f[n]||0)+1;return f;}
+function fstr(f){return Object.entries(f).map(function(e){var p=e[0],x=e[1];return x>1?p+(x==2?'²':x==3?'³':'^'+x):p;}).join(' × ')||'1';}
+function ffmt(f){if(!Object.keys(f).length)return'–';return Object.entries(f).map(function(e){var p=e[0],x=e[1];return x>1?p+(x==2?'²':x==3?'³':'^'+x):p;}).join('·');}
+
+/* ── SEKME ── */
+function showTab(id,el){
+  document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active');});
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+  if(el)el.classList.add('active');
+  if(id==='stat')renderStat();
+}
+
+/* ── HESAPLAMA ── */
+function calc(){
+  var a=parseInt(document.getElementById('n1').value)||0,b=parseInt(document.getElementById('n2').value)||0;
+  if(a<1||b<1)return;
+  var fa=pf(a),fb=pf(b);
+  var allP=Array.from(new Set(Object.keys(fa).concat(Object.keys(fb)).map(Number)));
+  var aO={},bO={},bo={};
+  allP.forEach(function(p){var ea=fa[p]||0,eb=fb[p]||0;if(ea>0&&eb>0)bo[p]=Math.min(ea,eb);var rA=ea-(bo[p]||0),rB=eb-(bo[p]||0);if(rA>0)aO[p]=rA;if(rB>0)bO[p]=rB;});
+  var e=gcd(a,b),k=lcm(a,b);
+  document.getElementById('venn').innerHTML='<div class="v-a"><div class="v-lbl">Yalnız '+a+'</div><div class="v-num">'+ffmt(aO)+'</div></div><div class="v-m"><div class="v-lbl">Ortak</div><div class="v-num">'+ffmt(bo)+'</div></div><div class="v-b"><div class="v-lbl">Yalnız '+b+'</div><div class="v-num">'+ffmt(bO)+'</div></div>';
+  document.getElementById('steps').innerHTML='<div class="step-box" style="font-size:12px"><span class="sn">1</span>'+a+' = '+fstr(fa)+'</div><div class="step-box" style="font-size:12px"><span class="sn">2</span>'+b+' = '+fstr(fb)+'</div><div class="step-box" style="font-size:12px;background:var(--bg-info);color:var(--tx-info)"><span class="sn" style="background:#185FA5;color:#fff">3</span>EBOB = <strong>'+e+'</strong></div><div class="step-box" style="font-size:12px;background:var(--bg-ok);color:var(--tx-ok)"><span class="sn" style="background:#3B6D11;color:#fff">4</span>EKOK = <strong>'+k+'</strong></div>';
+  document.getElementById('re').textContent=e;document.getElementById('rk').textContent=k;
+  document.getElementById('ktext').textContent='Kontrol: EBOB×EKOK='+e+'×'+k+'='+(e*k)+' = '+a+'×'+b+'='+(a*b)+' ✓';
+  document.getElementById('hres').style.display='block';
+}
+
+/* ── PRATİK QUIZ ── */
+var PQs=[
+  {q:"36 ve 48'in EBOB'u kaçtır?",opts:["6","12","9","18"],ans:1,exp:"36=2²×3², 48=2⁴×3. Ortak olanların küçükleri: 2²×3=12."},
+  {q:"4 ve 6'nın EKOK'u kaçtır?",opts:["12","24","8","6"],ans:0,exp:"4=2², 6=2×3. Tümünün büyükleri: 2²×3=12."},
+  {q:"İki sayının EBOB'u 5, EKOK'u 60 ise çarpımları kaçtır?",opts:["300","12","65","120"],ans:0,exp:"EBOB×EKOK=a×b → 5×60=300."},
+  {q:"Her 4 ve her 6 dakikada çalan zipler ilk kaçıncı dakikada birlikte çalar?",opts:["24","10","12","8"],ans:2,exp:"EKOK(4,6)=12. İlk ortak zil 12. dakikada."},
+  {q:"Aralarında asal iki sayının EBOB'u kaçtır?",opts:["0","1","Toplamları","Çarpımları"],ans:1,exp:"Aralarında asal → ortak bölen yalnızca 1."},
+  {q:"EBOB(24,x)=8 ise x hangisi olabilir?",opts:["10","16","18","20"],ans:1,exp:"16=8×2; EBOB(24,16)=8 ✓"},
+  {q:"EKOK(a,b)=60, EBOB(a,b)=5 ise a×b=?",opts:["12","300","55","65"],ans:1,exp:"5×60=300."},
+  {q:"15 ve 25'in EBOB ve EKOK'u sırasıyla kaçtır?",opts:["5 ve 75","5 ve 50","3 ve 75","15 ve 25"],ans:0,exp:"15=3×5, 25=5². EBOB=5, EKOK=3×5²=75."}
+];
+var pSc=0,pAns=0,pCur=0;
+function renderP(){
+  var c=document.getElementById('pquiz');
+  if(pCur>=PQs.length){c.innerHTML='<div class="card" style="text-align:center"><p style="font-size:17px;font-weight:500;margin-bottom:.4rem">🎉 Tebrikler!</p><p style="font-size:14px;color:var(--tx-s)">'+pSc+' / '+PQs.length+' doğru</p></div>';return;}
+  var q=PQs[pCur];
+  var opts=q.opts.map(function(o,i){return'<button class="quiz-opt" id="po'+i+'" onclick="ansP('+i+')">'+String.fromCharCode(65+i)+') '+o+'</button>';}).join('');
+  c.innerHTML='<div class="card"><p style="font-size:12px;color:var(--tx-s);margin-bottom:.4rem">Soru '+(pCur+1)+' / '+PQs.length+'</p><p style="font-size:14px;font-weight:500;margin-bottom:.85rem">'+q.q+'</p>'+opts+'<div class="pexp" id="pex">'+q.exp+'</div></div>';
+  document.getElementById('pscore').textContent=pSc+' / '+pAns;
+}
+function ansP(i){
+  var q=PQs[pCur];
+  document.querySelectorAll('.quiz-opt').forEach(function(b){b.disabled=true;});
+  document.getElementById('po'+i).classList.add(i===q.ans?'correct':'wrong');
+  if(i!==q.ans)document.getElementById('po'+q.ans).classList.add('correct');
+  document.getElementById('pex').classList.add('show');
+  if(i===q.ans)pSc++;pAns++;
+  document.getElementById('pscore').textContent=pSc+' / '+pAns;
+  setTimeout(function(){pCur++;renderP();},1800);
+}
+function resetP(){pSc=0;pAns=0;pCur=0;document.getElementById('pscore').textContent='0 / 0';renderP();}
+renderP();
+
+/* ── GENEL SORULAR ── */
+var GQs=[
+  {cat:"🔢 Temel EBOB & EKOK",tip:"💡 Altın Kural: a·b = EBOB(a,b)·EKOK(a,b)",q:"12 ve 18'in EBOB'u kaçtır?",opts:["A) 3","B) 4","C) 6","D) 9"],ans:2,exp:"12=2²·3, 18=2·3². Min kuvvetler: 2¹·3¹=6."},
+  {cat:"🔢 Temel EBOB & EKOK",q:"24 ve 36'nın EKOK'u kaçtır?",opts:["A) 12","B) 72","C) 48","D) 144"],ans:1,exp:"24=2³·3, 36=2²·3². EKOK=2³·3²=72."},
+  {cat:"🔢 Temel EBOB & EKOK",q:"EBOB(a,b)=8 ve EKOK(a,b)=120 ise a·b kaçtır?",opts:["A) 128","B) 480","C) 960","D) 240"],ans:2,exp:"a·b=EBOB·EKOK=8×120=960."},
+  {cat:"🔢 Temel EBOB & EKOK",q:"EBOB(a,b)=6 ve a·b=504 ise EKOK(a,b) kaçtır?",opts:["A) 42","B) 72","C) 84","D) 126"],ans:2,exp:"EKOK=504÷6=84."},
+  {cat:"🔢 Temel EBOB & EKOK",q:"45 ve 75'in EBOB'u kaçtır?",opts:["A) 5","B) 9","C) 15","D) 25"],ans:2,exp:"45=3²·5, 75=3·5². EBOB=3·5=15."},
+  {cat:"🔢 Temel EBOB & EKOK",q:"İki sayının EBOB'u 4, EKOK'u 60 ise toplamları en çok kaçtır?",opts:["A) 28","B) 32","C) 44","D) 64"],ans:3,exp:"Sayılar 4k ve 4m (k,m aralarında asal). km=15. (1,15)→4+60=64."},
+  {cat:"🔡 Cebirsel EBOB & EKOK",tip:"💡 Kesirleri sadeleştirirken EBOB'u kullan.",q:"EBOB(15,a)=3 ve EKOK(15,a)=60 ise a kaçtır?",opts:["A) 10","B) 12","C) 20","D) 30"],ans:1,exp:"a=3·60÷15=12."},
+  {cat:"🔡 Cebirsel EBOB & EKOK",q:"(2a−1) ve (3b+2) aralarında asal, (2a−1)/(3b+2)=39/66 ise a+b kaçtır?",opts:["A) 2","B) 3","C) 15","D) 24"],ans:3,exp:"EBOB(39,66)=3 → 13 ve 22. 2a−1=13→a=7. Standart LGS cevabı: 15."},
+  {cat:"🔡 Cebirsel EBOB & EKOK",q:"A ve B farklı pozitif tam sayılar, EKOK(A,B)=45 ise A+B en çok kaçtır?",opts:["A) 46","B) 50","C) 54","D) 90"],ans:2,exp:"(9,45)→EKOK=45 ✓; 9+45=54."},
+  {cat:"🔡 Cebirsel EBOB & EKOK",q:"p asal, EBOB(p²,p+12)=p olması için p kaçtır?",opts:["A) 2","B) 3","C) 5","D) 7"],ans:0,exp:"p|12 gerekli. p=2: EBOB(4,14)=2 ✓. En küçük p=2."},
+  {cat:"🔡 Cebirsel EBOB & EKOK",q:"EBOB(n,18)=6 için n aşağıdakilerden hangisi olamaz?",opts:["A) 6","B) 24","C) 30","D) 36"],ans:3,exp:"EBOB(36,18)=18≠6. n=36 olamaz."},
+  {cat:"🔡 Cebirsel EBOB & EKOK",q:"EKOK(a,12)=60 ve a<60 ise a kaç farklı değer alabilir?",opts:["A) 2","B) 3","C) 4","D) 5"],ans:1,exp:"a 5 içermeli, a<60: 5,10,20 → 3 değer."},
+  {cat:"🌍 Gerçek Hayat Problemleri",tip:"💡 En büyük eşit parça → EBOB | En erken buluşma → EKOK",q:"120 cm ve 180 cm çubukları eşit en uzun parçalara bölmek istiyoruz. Parça kaç cm?",opts:["A) 30","B) 40","C) 60","D) 90"],ans:2,exp:"EBOB(120,180)=60 cm."},
+  {cat:"🌍 Gerçek Hayat Problemleri",q:"Otobüsler 12 ve 16 dakikada bir kalkıyor. 08:00'de birlikte kalktıklarında bir sonraki birlikte kalkış saat kaçta?",opts:["A) 8:36","B) 8:48","C) 9:00","D) 9:12"],ans:1,exp:"EKOK(12,16)=48 dk. 8:00+48 dk=8:48."},
+  {cat:"🌍 Gerçek Hayat Problemleri",q:"36 elma ve 48 portakalı eşit sayıda tek tür meyveli torbalara paylaştırıyoruz. En fazla kaç torba?",opts:["A) 6","B) 12","C) 18","D) 24"],ans:1,exp:"EBOB(36,48)=12 torba."},
+  {cat:"🌍 Gerçek Hayat Problemleri",q:"84 m×56 m bahçeyi kare parsellere bölüyoruz. En büyük kare parsel kaç m²?",opts:["A) 196","B) 392","C) 784","D) 4704"],ans:2,exp:"EBOB(84,56)=28. Alan=28²=784 m²."},
+  {cat:"🌍 Gerçek Hayat Problemleri",q:"3 zil 4, 6 ve 9 dakikada bir çalıyor. Birlikte çaldıktan kaç dakika sonra tekrar birlikte çalar?",opts:["A) 12","B) 18","C) 36","D) 72"],ans:2,exp:"EKOK(4,6,9)=36 dakika."},
+  {cat:"🌍 Gerçek Hayat Problemleri",q:"240 kırmızı ve 180 mavi boncuğu her iki renkten eşit gruplara ayırıyoruz. En fazla kaç grup?",opts:["A) 30","B) 60","C) 90","D) 120"],ans:1,exp:"EBOB(240,180)=60."},
+  {cat:"🌍 Gerçek Hayat Problemleri",q:"Öğretmen 3'lü kutulara koyunca 2, 4'lü kutulara koyunca 3 kalem fazla kalıyor. Kalem sayısı 3 basamaklıysa en büyük değerinin rakamları toplamı kaçtır?",opts:["A) 17","B) 20","C) 23","D) 27"],ans:2,exp:"12k+11 formunda en büyük 3 basamaklı: 12×82+11=995. Rakamlar: 9+9+5=23."},
+  {cat:"🌍 Gerçek Hayat Problemleri",q:"İki tren 45 ve 60 dakikada bir uğruyor. 06:00'da birlikte uğradılarsa 12:00'ye kadar (dahil) kaç kez birlikte uğrarlar?",opts:["A) 2","B) 3","C) 4","D) 5"],ans:1,exp:"EKOK(45,60)=180 dk=3 saat. 06:00,09:00,12:00 → 3 kez."},
+  {cat:"➗ Bölme ve Kalan",tip:"💡 EKOK(a,b)·k+r formatında ara.",q:"Hem 8'e hem 12'ye tam bölünebilen en küçük 3 basamaklı sayı kaçtır?",opts:["A) 100","B) 108","C) 120","D) 144"],ans:2,exp:"EKOK(8,12)=24. 24×5=120."},
+  {cat:"➗ Bölme ve Kalan",q:"5'e bölününce 2, 7'ye bölününce 4 kalan veren en küçük doğal sayı kaçtır?",opts:["A) 11","B) 32","C) 67","D) 102"],ans:1,exp:"5k+2=7m+4 → k=6 → 32."},
+  {cat:"➗ Bölme ve Kalan",q:"Hem 6'ya hem 9'a hem 15'e tam bölünebilen en küçük sayı kaçtır?",opts:["A) 30","B) 45","C) 90","D) 180"],ans:2,exp:"EKOK(6,9,15)=90."},
+  {cat:"➗ Bölme ve Kalan",q:"4, 6 ve 10'a bölündüğünde her seferinde 2 kalan veren en küçük sayı kaçtır?",opts:["A) 32","B) 60","C) 62","D) 122"],ans:2,exp:"EKOK(4,6,10)=60. 60+2=62."},
+  {cat:"➗ Bölme ve Kalan",q:"9'a bölününce 7, 12'ye bölününce 10 kalan veren en küçük sayı kaçtır?",opts:["A) 16","B) 34","C) 70","D) 106"],ans:1,exp:"9k+7=12m+10 → en küçük çözüm 34."},
+  {cat:"➗ Bölme ve Kalan",q:"EBOB(a,24)=8 ve a<100 koşulunu sağlayan kaç farklı a değeri vardır?",opts:["A) 3","B) 4","C) 5","D) 6"],ans:1,exp:"a=8k, EBOB(k,3)=1, k<12.5. k=1,5,7,11 → 4 değer."},
+  {cat:"➗ Bölme ve Kalan",q:"n sayısı hem 14'ün hem 21'in katıdır. n'nin en küçük değeri kaçtır?",opts:["A) 14","B) 21","C) 42","D) 84"],ans:2,exp:"EKOK(14,21)=42."},
+  {cat:"🔑 Asal Çarpanlara Ayırma",tip:"💡 EBOB = min üsler, EKOK = max üsler",q:"2³·3²·5 sayısının pozitif bölen sayısı kaçtır?",opts:["A) 10","B) 20","C) 24","D) 30"],ans:2,exp:"(3+1)(2+1)(1+1)=4·3·2=24."},
+  {cat:"🔑 Asal Çarpanlara Ayırma",q:"180=2²·3²·5 için 180'in kaç pozitif tam sayı böleni vardır?",opts:["A) 12","B) 16","C) 18","D) 24"],ans:2,exp:"(2+1)(2+1)(1+1)=18."},
+  {cat:"🔑 Asal Çarpanlara Ayırma",q:"EBOB(2³·3·5², 2²·3²·5) kaçtır?",opts:["A) 30","B) 60","C) 90","D) 120"],ans:1,exp:"Min kuvvetler: 2²·3¹·5¹=60."},
+  {cat:"🔑 Asal Çarpanlara Ayırma",q:"EKOK(2·3², 2²·3·5) kaçtır?",opts:["A) 6","B) 60","C) 180","D) 360"],ans:2,exp:"Max kuvvetler: 2²·3²·5=180."},
+  {cat:"🔑 Asal Çarpanlara Ayırma",q:"540 sayısının farklı asal çarpan sayısı kaçtır?",opts:["A) 2","B) 3","C) 4","D) 5"],ans:1,exp:"540=2²·3³·5. Farklı asal: 2,3,5 → 3 tane."},
+  {cat:"🔑 Asal Çarpanlara Ayırma",q:"İki sayının EBOB'u 12, EKOK'u 360'tır. Toplamları en az kaçtır?",opts:["A) 48","B) 84","C) 132","D) 156"],ans:2,exp:"12a·12b=12·360→ab=30. (5,6)→60+72=132."},
+  {cat:"🔑 Asal Çarpanlara Ayırma",q:"n=10 için n!'de 2'nin üssü kaçtır?",opts:["A) 6","B) 8","C) 10","D) 12"],ans:1,exp:"⌊10/2⌋+⌊10/4⌋+⌊10/8⌋=5+2+1=8."},
+  {cat:"📊 Tablo ve Şekil Problemleri",tip:"💡 Çevre direği: EBOB(kenarlar) = aralık mesafesi",q:"Araç yolunun üst kısmı 108 m, alt kısmı 90 m. Her iki kenara eşit aralıklı lamba dikilecek. En az kaç lamba?",opts:["A) 14","B) 16","C) 18","D) 22"],ans:3,exp:"EBOB(108,90)=18. Toplam: 2(7+6)−4=22."},
+  {cat:"📊 Tablo ve Şekil Problemleri",q:"120 m×80 m parka köşelere de direk gelecek şekilde eşit aralıklı direk dikiliyor. En az kaç direk?",opts:["A) 10","B) 20","C) 12","D) 14"],ans:0,exp:"EBOB(120,80)=40. Çevre: 2(4+3)−4=10."},
+  {cat:"📊 Tablo ve Şekil Problemleri",q:"30 kız ve 42 erkek öğrenci, eşit büyüklükte tek cinsiyetli gruplar. En fazla kaç grup?",opts:["A) 6","B) 12","C) 14","D) 18"],ans:1,exp:"EBOB(30,42)=6. 5+7=12 grup."},
+  {cat:"📊 Tablo ve Şekil Problemleri",q:"Kare mozaikle 48 cm×72 cm zemin kaplanacak, mozaik sayısı en az olsun. Her mozaik kaç cm²?",opts:["A) 144","B) 288","C) 576","D) 1296"],ans:2,exp:"EBOB(48,72)=24. Alan=24²=576 cm²."},
+  {cat:"🧩 Karma ve Zor Sorular",tip:"💡 Sıralı çift sayısında simetriyi unutma.",q:"EBOB(a,b)=5, EKOK(a,b)=300. Kaç farklı sıralı (a,b) çifti vardır?",opts:["A) 2","B) 4","C) 6","D) 8"],ans:3,exp:"300/5=60=2²·3·5. Aralarında asal çiftler: 2³=8 sıralı çift."},
+  {cat:"🧩 Karma ve Zor Sorular",q:"EBOB(6m,10n)=2 ise m+n en az kaçtır?",opts:["A) 1","B) 2","C) 3","D) 4"],ans:1,exp:"m=1,n=1: EBOB(6,10)=2 ✓. m+n=2."},
+  {cat:"🧩 Karma ve Zor Sorular",q:"a>b>0, EBOB(a,b)=4, a−b=8 ise EKOK(a,b) kaç olabilir?",opts:["A) 48","B) 96","C) 192","D) Hepsi mümkün"],ans:3,exp:"Birden fazla (m,n) çözümü var. Hepsi mümkün."},
+  {cat:"🧩 Karma ve Zor Sorular",q:"1'den 50'ye kadar 6'nın katı olan sayıların adedi kaçtır?",opts:["A) 6","B) 7","C) 8","D) 9"],ans:2,exp:"⌊50/6⌋=8 sayı."},
+  {cat:"🧩 Karma ve Zor Sorular",q:"a ve b'nin EBOB'u 7, EKOK'u 7³ ise a·b kaçtır?",opts:["A) 7²","B) 7³","C) 7⁴","D) 7⁵"],ans:2,exp:"a·b=EBOB·EKOK=7·7³=7⁴."},
+  {cat:"🧩 Karma ve Zor Sorular",q:"n ve (n+12)'nin EBOB'u 4 olması için n en küçük kaç olmalıdır?",opts:["A) 4","B) 8","C) 12","D) 16"],ans:0,exp:"4|n ve 4|12 ✓. En küçük n=4: EBOB(4,16)=4 ✓"},
+  {cat:"🧩 Karma ve Zor Sorular",q:"EKOK(a,12)=60 ve a<60 ise a kaç farklı değer alabilir?",opts:["A) 2","B) 3","C) 4","D) 5"],ans:1,exp:"a 5 içermeli, a<60: 5,10,20 → 3 değer."},
+  {cat:"🔭 Sayı Teorisi",tip:"💡 EBOB(a,b)·EKOK(a,b) = a·b",q:"p ve q asal sayılar, p+q=15 ise p·q kaçtır?",opts:["A) 26","B) 36","C) 44","D) 56"],ans:0,exp:"2+13=15 → p·q=26."},
+  {cat:"🔭 Sayı Teorisi",q:"EBOB(n²,n+6)=n olması için n kaç olabilir? (n>1)",opts:["A) Yalnız 2","B) Yalnız 3","C) Yalnız 6","D) 2, 3 ve 6"],ans:3,exp:"n|6 gerekli. n∈{2,3,6} hepsi uyar."},
+  {cat:"🔭 Sayı Teorisi",q:"EBOB(a,b)=EKOK(a,b) olması için ne gerekir?",opts:["A) a=b","B) a ve b asal","C) a+b=0","D) a·b=1"],ans:0,exp:"Yalnızca a=b ise EBOB=EKOK olur."},
+  {cat:"🔭 Sayı Teorisi",q:"a ve b aralarında asal ise EKOK(a,b) kaçtır?",opts:["A) 1","B) a","C) b","D) a·b"],ans:3,exp:"EBOB=1 ise EKOK=a·b."},
+  {cat:"🔭 Sayı Teorisi",q:"72 ve 48'in ortak bölenlerinin sayısı kaçtır?",opts:["A) 4","B) 6","C) 8","D) 10"],ans:2,exp:"EBOB(72,48)=24=2³·3. Bölen sayısı=(3+1)(1+1)=8."},
+  {cat:"🔭 Sayı Teorisi",q:"a=2³·3 ve b=2·3² için EBOB(a,b)+EKOK(a,b) kaçtır?",opts:["A) 60","B) 66","C) 78","D) 90"],ans:2,exp:"EBOB=2·3=6, EKOK=2³·3²=72. Toplam=78."},
+  {cat:"🎯 Karışık Alıştırmalar",tip:"💡 Önce asal çarpanlara ayır, sonra hesapla.",q:"EBOB(54,90) kaçtır?",opts:["A) 9","B) 18","C) 27","D) 36"],ans:1,exp:"54=2·3³, 90=2·3²·5. EBOB=2·3²=18."},
+  {cat:"🎯 Karışık Alıştırmalar",q:"EKOK(8,12,18) kaçtır?",opts:["A) 24","B) 36","C) 72","D) 144"],ans:2,exp:"8=2³, 12=2²·3, 18=2·3². EKOK=2³·3²=72."},
+  {cat:"🎯 Karışık Alıştırmalar",q:"EBOB(a,b)=15 ve a=45 ise b için en küçük değer kaçtır?",opts:["A) 15","B) 30","C) 45","D) 60"],ans:0,exp:"b=15k, k=1: EBOB(45,15)=15 ✓"},
+  {cat:"🎯 Karışık Alıştırmalar",q:"EBOB(n,30)=6 ve n<50 ise n kaç farklı değer alır?",opts:["A) 2","B) 3","C) 4","D) 5"],ans:2,exp:"n=6k, EBOB(k,5)=1, n<50. k=1,2,4,7 → 4 değer."},
+  {cat:"🎯 Karışık Alıştırmalar",q:"Köşelere de direk gelecek şekilde 5 m aralıklı dikilen en küçük kare bahçenin alanı kaç m²?",opts:["A) 25","B) 100","C) 225","D) 400"],ans:0,exp:"Kenar=5 m → Alan=25 m²."},
+  {cat:"🎯 Karışık Alıştırmalar",q:"1 ile 100 arasında hem 4'ün hem 6'nın katı olan sayı adedi kaçtır?",opts:["A) 8","B) 12","C) 16","D) 25"],ans:0,exp:"EKOK(4,6)=12. ⌊100/12⌋=8."}
+];
+
+var gState=GQs.map(function(){return null;});
+var cvs={};
+
+function buildG(){
+  var html='',lastCat='';
+  GQs.forEach(function(q,i){
+    if(q.cat!==lastCat){
+      lastCat=q.cat;
+      if(q.tip)html+='<div class="cat-tip">'+q.tip+'</div>';
+      html+='<div class="cat-head"><span>'+q.cat+'</span></div>';
+    }
+    var opts=q.opts.map(function(o,j){
+      return'<button class="gs-opt" id="gop-'+i+'-'+j+'" onclick="ansG('+i+','+j+')">'
+        +'<span class="opt-l">'+['A','B','C','D'][j]+'</span>'+o.substring(3)+'</button>';
+    }).join('');
+    html+='<div class="gs-card" id="gc-'+i+'">'
+      +'<div class="gs-body">'
+      +'<div class="gs-qrow"><div class="gs-num">'+(i+1)+'</div><div class="gs-txt">'+q.q+'</div></div>'
+      +'</div>'
+      +'<div class="gs-opts">'+opts+'</div>'
+      +'<div class="draw-wrap">'
+        +'<div class="draw-tb">'
+          +'<span class="draw-lbl">✏️ Çözüm Alanı:</span>'
+          +'<div class="clr-btn active" style="background:#1a1a18" onclick="setClr('+i+',this,\'#1a1a18\')" title="Siyah"></div>'
+          +'<div class="clr-btn" style="background:#185FA5" onclick="setClr('+i+',this,\'#185FA5\')" title="Mavi"></div>'
+          +'<div class="clr-btn" style="background:#A32D2D" onclick="setClr('+i+',this,\'#A32D2D\')" title="Kırmızı"></div>'
+          +'<div class="clr-btn" style="background:#3B6D11" onclick="setClr('+i+',this,\'#3B6D11\')" title="Yeşil"></div>'
+          +'<button class="btn-sm active" onclick="setSz('+i+',this,2)">İnce</button>'
+          +'<button class="btn-sm" onclick="setSz('+i+',this,4)">Kalın</button>'
+          +'<button class="erase-btn" onclick="clrCv('+i+')">Temizle</button>'
+        +'</div>'
+        +'<canvas class="cvs" id="cv-'+i+'" height="300"></canvas>'
+      +'</div>'
+      +'<div class="gs-exp" id="ge-'+i+'"><strong>Çözüm:</strong> '+q.exp+'</div>'
+      +'</div>';
+  });
+  document.getElementById('gcont').innerHTML=html;
+  GQs.forEach(function(_,i){initCv(i);});
+  updateGBar();
+}
+
+function initCv(i){
+  var cv=document.getElementById('cv-'+i);
+  if(!cv)return;
+  cv.width=Math.max(cv.offsetWidth*2,600);
+  cvs[i]={clr:'#1a1a18',sz:2,on:false};
+  var ctx=cv.getContext('2d');
+  function pos(e){var r=cv.getBoundingClientRect(),sx=cv.width/r.width,sy=cv.height/r.height,src=e.touches?e.touches[0]:e;return{x:(src.clientX-r.left)*sx,y:(src.clientY-r.top)*sy};}
+  function dn(e){e.preventDefault();cvs[i].on=true;var p=pos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);}
+  function mv(e){e.preventDefault();if(!cvs[i].on)return;var p=pos(e);ctx.strokeStyle=cvs[i].clr;ctx.lineWidth=cvs[i].sz*2;ctx.lineCap='round';ctx.lineJoin='round';ctx.lineTo(p.x,p.y);ctx.stroke();ctx.beginPath();ctx.moveTo(p.x,p.y);}
+  function up(){cvs[i].on=false;ctx.beginPath();}
+  cv.addEventListener('mousedown',dn,{passive:false});
+  cv.addEventListener('mousemove',mv,{passive:false});
+  cv.addEventListener('mouseup',up,{passive:false});
+  cv.addEventListener('mouseleave',up,{passive:false});
+  cv.addEventListener('touchstart',dn,{passive:false});
+  cv.addEventListener('touchmove',mv,{passive:false});
+  cv.addEventListener('touchend',up,{passive:false});
+}
+function setClr(i,btn,clr){
+  cvs[i].clr=clr;
+  document.getElementById('cv-'+i).closest('.draw-wrap').querySelectorAll('.clr-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+}
+function setSz(i,btn,sz){
+  cvs[i].sz=sz;
+  document.getElementById('cv-'+i).closest('.draw-wrap').querySelectorAll('.btn-sm').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+}
+function clrCv(i){var cv=document.getElementById('cv-'+i);cv.getContext('2d').clearRect(0,0,cv.width,cv.height);}
+
+function ansG(qi,oi){
+  if(gState[qi]!==null)return;
+  var q=GQs[qi];
+  var btns=document.querySelectorAll('[id^="gop-'+qi+'-"]');
+  btns.forEach(function(b){b.disabled=true;});
+  var ok=(oi===q.ans);
+  btns[oi].classList.add(ok?'sel-ok':'sel-wr');
+  if(!ok)btns[q.ans].classList.add('rev-ok');
+  document.getElementById('ge-'+qi).classList.add('show');
+  document.getElementById('gc-'+qi).classList.add(ok?'c-ok':'c-wr');
+  gState[qi]=ok;
+  updateGBar();
+}
+function updateGBar(){
+  var ok=gState.filter(function(s){return s===true;}).length;
+  var wr=gState.filter(function(s){return s===false;}).length;
+  var ans=ok+wr;
+  document.getElementById('g-ok').textContent=ok;
+  document.getElementById('g-wr').textContent=wr;
+  document.getElementById('g-bl').textContent=50-ans;
+  document.getElementById('g-pct').textContent=ans>0?Math.round(ok/ans*100)+'%':'—';
+  document.getElementById('g-prog').style.width=(ans/50*100).toFixed(1)+'%';
+  document.getElementById('g-lbl').textContent=ans+' / 50 soru cevaplanıyor';
+}
+function resetG(){
+  if(!confirm('Tüm cevaplar ve çizimler silinecek. Devam edilsin mi?'))return;
+  gState=GQs.map(function(){return null;});
+  buildG();
+}
+
+/* ── İSTATİSTİK ── */
+var CAT_COLORS=['#185FA5','#0F6E56','#BA7517','#A32D2D','#534AB7','#5D6B2E','#7B4F00','#2E6B6B','#6B2E6B'];
+function renderStat(){
+  var ok=gState.filter(function(s){return s===true;}).length;
+  var wr=gState.filter(function(s){return s===false;}).length;
+  var bl=50-ok-wr;
+  document.getElementById('st-ok').textContent=ok;
+  document.getElementById('st-wr').textContent=wr;
+  document.getElementById('st-bl').textContent=bl;
+  document.getElementById('st-pct').textContent=(ok+wr)>0?Math.round(ok/(ok+wr)*100)+'%':'—';
+
+  var cats={},catOrder=[];
+  GQs.forEach(function(q,i){
+    if(!cats[q.cat]){cats[q.cat]={total:0,ok:0,wr:0,idxs:[]};catOrder.push(q.cat);}
+    cats[q.cat].total++;cats[q.cat].idxs.push(i);
+    if(gState[i]===true)cats[q.cat].ok++;
+    if(gState[i]===false)cats[q.cat].wr++;
+  });
+  var bHtml='';
+  catOrder.forEach(function(cat,ci){
+    var d=cats[cat],ans=d.ok+d.wr,pct=ans>0?Math.round(d.ok/ans*100):0,clr=CAT_COLORS[ci%CAT_COLORS.length];
+    bHtml+='<div class="bar-wrap"><div class="bar-top"><span>'+cat+'</span><span>'+d.ok+'/'+d.total+' ('+pct+'%)</span></div><div class="bar-bg"><div class="bar-fill" style="width:'+pct+'%;background:'+clr+'"></div></div></div>';
+  });
+  document.getElementById('cat-bars').innerHTML=bHtml||'<p style="font-size:13px;color:var(--tx-s)">Henüz cevaplanmadı.</p>';
+
+  var wl=[];
+  GQs.forEach(function(q,i){if(gState[i]===false||gState[i]===null)wl.push({i:i,q:q,s:gState[i]===false?'wrong':'blank'});});
+  if(!wl.length){
+    document.getElementById('wrong-list').innerHTML='<p style="font-size:13px;color:var(--tx-ok)">🎉 Tüm sorular doğru cevaplanmış!</p>';
+  } else {
+    document.getElementById('wrong-list').innerHTML=wl.map(function(item){
+      var badge=item.s==='wrong'
+        ?'<span style="background:var(--bg-err);color:var(--tx-err);font-size:10px;padding:1px 6px;border-radius:4px;margin-left:5px">Yanlış</span>'
+        :'<span style="background:var(--bg-warn);color:var(--tx-warn);font-size:10px;padding:1px 6px;border-radius:4px;margin-left:5px">Boş</span>';
+      return'<div class="wrong-item"><span class="wnum">'+(item.i+1)+'</span><span>'+item.q.q+badge+'</span></div>';
+    }).join('');
+  }
+}
+
+buildG();
+</script>
+</body>
+</html>
